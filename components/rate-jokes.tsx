@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { ThumbsUp, ThumbsDown, RotateCcw } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { jokes } from "@/data/jokes"
+import Link from "next/link"
 
 export default function RateJokes() {
   const [currentJokeIndex, setCurrentJokeIndex] = useState(0)
@@ -98,7 +99,7 @@ export default function RateJokes() {
         >
           <CardContent className="p-8">
             <div className="text-center">
-              <div className="text-lg leading-relaxed text-gray-700 dark:text-gray-200 mb-4">{currentJoke}</div>
+              <div className="text-lg leading-relaxed text-gray-700 dark:text-gray-200 mb-4">{currentJoke.text}</div>
 
               {currentRating && (
                 <div className="flex items-center justify-center gap-1 text-sm text-gray-500 dark:text-gray-400">
@@ -238,19 +239,19 @@ export default function RateJokes() {
               <div className="mb-3">
                 <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                   Jokes for you{" "}
-                  <a
-                    href="#"
+                  <Link
+                    href="/database"
                     className="text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 font-normal"
                   >
                     (see full database)
-                  </a>
+                  </Link>
                 </h3>
                 <p className="text-xs text-gray-500 dark:text-gray-400">Based on your humor horoscope</p>
               </div>
               <div className="space-y-0">
                 <div className="py-3 border-b border-gray-200 dark:border-gray-600">
                   <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
-                    Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+                    {jokes[5]?.text || "Why don't scientists trust atoms? Because they make up everything!"}
                   </div>
                   <div className="flex flex-wrap gap-1">
                     <Badge variant="secondary" className="text-xs">
@@ -266,7 +267,7 @@ export default function RateJokes() {
                 </div>
                 <div className="py-3 border-b border-gray-200 dark:border-gray-600">
                   <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
-                    Natus error sit voluptatem accusantium doloremque laudantium
+                    {jokes[12]?.text || "I told my wife she was drawing her eyebrows too high. She looked surprised."}
                   </div>
                   <div className="flex flex-wrap gap-1">
                     <Badge variant="secondary" className="text-xs">
@@ -285,7 +286,7 @@ export default function RateJokes() {
                 </div>
                 <div className="py-3 border-b border-gray-200 dark:border-gray-600">
                   <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
-                    Doloremque laudantium totam rem aperiam eaque ipsa quae
+                    {jokes[23]?.text || "Why did the scarecrow win an award? He was outstanding in his field!"}
                   </div>
                   <div className="flex flex-wrap gap-1">
                     <Badge variant="secondary" className="text-xs">
@@ -298,7 +299,7 @@ export default function RateJokes() {
                 </div>
                 <div className="py-3">
                   <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
-                    Eaque ipsa quae ab illo inventore veritatis et quasi architecto
+                    {jokes[34]?.text || "I'm reading a book about anti-gravity. It's impossible to put down!"}
                   </div>
                   <div className="flex flex-wrap gap-1">
                     <Badge variant="secondary" className="text-xs">
