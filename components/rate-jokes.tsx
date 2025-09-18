@@ -163,7 +163,10 @@ export default function RateJokes() {
           <Card className="bg-white/60 dark:bg-gray-800/60">
             <CardContent className="p-4">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Your Humor Horoscope</h3>
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Your Humor Horoscope</h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">What you look for in your jokes</p>
+                </div>
                 <Button size="sm" variant="outline" className="text-xs bg-transparent">
                   Generate
                 </Button>
@@ -232,15 +235,18 @@ export default function RateJokes() {
         <div className="mt-4">
           <Card className="bg-white/60 dark:bg-gray-800/60">
             <CardContent className="p-4">
-              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
-                More recommended jokes{" "}
-                <a
-                  href="#"
-                  className="text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 font-normal"
-                >
-                  (see full database)
-                </a>
-              </h3>
+              <div className="mb-3">
+                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  Jokes for you{" "}
+                  <a
+                    href="#"
+                    className="text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 font-normal"
+                  >
+                    (see full database)
+                  </a>
+                </h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Based on your humor horoscope</p>
+              </div>
               <div className="space-y-0">
                 <div className="py-3 border-b border-gray-200 dark:border-gray-600">
                   <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
