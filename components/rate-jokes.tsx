@@ -215,6 +215,15 @@ export default function RateJokes() {
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
+              <div className="flex justify-center mt-4">
+                <a
+                  href="#"
+                  className="flex items-center gap-2 text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                >
+                  <img src="/pi-logo.svg" alt="Pi Studio" className="w-4 h-4" />
+                  Open in Pi Studio
+                </a>
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -223,7 +232,15 @@ export default function RateJokes() {
         <div className="mt-4">
           <Card className="bg-white/60 dark:bg-gray-800/60">
             <CardContent className="p-4">
-              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">More recommended jokes</h3>
+              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                More recommended jokes{" "}
+                <a
+                  href="#"
+                  className="text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 font-normal"
+                >
+                  (see full database)
+                </a>
+              </h3>
               <div className="space-y-0">
                 <div className="py-3 border-b border-gray-200 dark:border-gray-600">
                   <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
