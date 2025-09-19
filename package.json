@@ -9,6 +9,8 @@
     "start": "next start"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.8",
+    "@heroicons/react": "^2.2.0",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "1.2.2",
     "@radix-ui/react-alert-dialog": "1.1.4",
@@ -49,6 +51,7 @@
     "input-otp": "1.4.1",
     "lucide-react": "^0.454.0",
     "mongodb": "^6.20.0",
+    "motion": "^12.23.15",
     "next": "14.2.16",
     "next-themes": "^0.4.6",
     "react": "^18",
@@ -60,6 +63,7 @@
     "sonner": "^1.7.4",
     "swr": "^2.3.6",
     "tailwind-merge": "^2.5.5",
+    "tailwind-variants": "^3.1.1",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.9",
     "withpi": "^1.40.0",

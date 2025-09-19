@@ -10,15 +10,57 @@ import { ThumbsUp, ThumbsDown, RotateCcw } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { jokes } from "@/data/jokes"
 import Link from "next/link"
+import {useScorerGenerator} from "@/lib/hooks/useGeneratedRubric";
+import useLocalStorage from "@/lib/hooks/useLocalStorage";
+import PiClient from "withpi";
+import Question = PiClient.Question;
+import {ScorerGenerator} from "@/components/scorer_generator";
 
 export default function RateJokes() {
   const [currentJokeIndex, setCurrentJokeIndex] = useState(0)
+  const [rubric, setRubric] = useState<Question[]>([]);
+  const [starting, setStarting] = useState<boolean>(false)
   const [ratings, setRatings] = useState<{ [key: number]: "funny" | "not-funny" | null }>({})
   const [touchStart, setTouchStart] = useState<number | null>(null)
   const [touchEnd, setTouchEnd] = useState<number | null>(null)
   const cardRef = useRef<HTMLDivElement>(null)
-  const { toast } = useToast()
-
+  const { toast } = useToast();
+  const [jobId, setJobId] = useLocalStorage('scorerGenJobId', null);
+  const scorerGenerator = useScorerGenerator({
+    initJobId: jobId || null,
+    onFetch: (status) => {
+     console.log("Fetched", status);
+    },
+    onFinish: (status) => {
+      console.log("Finsihed with", status);
+    },
+    onError: (e) => {
+      console.log(e);
+    }
+  });
+  async function startGeneratingScorer() {
+    const ratingData = Object.entries(ratings);
+    if (ratingData.length > 0) {
+      const goodJokes = [];
+      const badJokes = [];
+      for (const rating of ratingData) {
+        if (rating[1] == 'funny') {
+          const key = Number(rating[0]);
+          goodJokes.push(jokes[key].text)
+        } else if (rating[1] == 'not-funny') {
+          const key = Number(rating[0]);
+          badJokes.push(jokes[key].text)
+        }
+      }
+      setStarting(true);
+      console.log("Starting scorer generator with ", goodJokes, badJokes);
+      const job = await scorerGenerator.start(goodJokes, badJokes);
+      console.log("Stated job", job);
+      setJobId(job.jobId);
+      setStarting(false
+      )
+    }
+  }
   const currentJoke = jokes[currentJokeIndex]
   const currentRating = ratings[currentJokeIndex]
 
@@ -161,6 +203,11 @@ export default function RateJokes() {
 
         {/* Quick Tips - replaced with accordion component */}
         <div className="mt-8">
+          <ScorerGenerator job={scorerGenerator.status} generatingScorer={starting || scorerGenerator.running} title={'Generate a horoscope'} finishGeneratingScorer={async () => {
+            setJobId(null);
+          }} startGeneratingScorer={startGeneratingScorer} stopGeneratingScorer={async () => {
+            await scorerGenerator.cancel();
+          }}/>
           <Card className="bg-white/60 dark:bg-gray-800/60">
             <CardContent className="p-4">
               <div className="flex items-center justify-between mb-3">
