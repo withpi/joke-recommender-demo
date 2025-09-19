@@ -121,7 +121,7 @@ export default function RateJokes() {
       handleRating("funny")
     }
   }
-
+  console.log(rubric);
   return (
     <div className="flex items-center justify-center p-4 min-h-[calc(100vh-80px)]">
       <div className="w-full max-w-md mx-auto">
@@ -203,8 +203,11 @@ export default function RateJokes() {
 
         {/* Quick Tips - replaced with accordion component */}
         <div className="mt-8">
-          <ScorerGenerator job={scorerGenerator.status} generatingScorer={starting || scorerGenerator.running} title={'Generate a horoscope'} finishGeneratingScorer={async () => {
+          <ScorerGenerator job={scorerGenerator.status} generatingScorer={starting || scorerGenerator.running || jobId} title={'Generate a horoscope'} finishGeneratingScorer={async () => {
             setJobId(null);
+            if (scorerGenerator.status?.dimensions) {
+              setRubric(scorerGenerator.status?.dimensions)
+            }
           }} startGeneratingScorer={startGeneratingScorer} stopGeneratingScorer={async () => {
             await scorerGenerator.cancel();
           }}/>
@@ -215,56 +218,18 @@ export default function RateJokes() {
                   <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Your Humor Horoscope</h3>
                   <p className="text-xs text-gray-500 dark:text-gray-400">What you look for in your jokes</p>
                 </div>
-                <Button size="sm" variant="outline" className="text-xs bg-transparent">
-                  Generate
-                </Button>
               </div>
               <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="item-1">
-                  <AccordionTrigger className="text-xs text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200">
-                    Lorem ipsum dolor sit amet consectetur
-                  </AccordionTrigger>
-                  <AccordionContent className="text-xs text-gray-500 dark:text-gray-500">
-                    Adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-                    veniam, quis nostrud exercitation.
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="item-2">
-                  <AccordionTrigger className="text-xs text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200">
-                    Adipiscing elit sed do eiusmod tempor
-                  </AccordionTrigger>
-                  <AccordionContent className="text-xs text-gray-500 dark:text-gray-500">
-                    Incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                    ullamco laboris nisi ut aliquip.
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="item-3">
-                  <AccordionTrigger className="text-xs text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200">
-                    Incididunt ut labore et dolore magna
-                  </AccordionTrigger>
-                  <AccordionContent className="text-xs text-gray-500 dark:text-gray-500">
-                    Aliqua enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                    consequat.
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="item-4">
-                  <AccordionTrigger className="text-xs text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200">
-                    Aliqua enim ad minim veniam quis
-                  </AccordionTrigger>
-                  <AccordionContent className="text-xs text-gray-500 dark:text-gray-500">
-                    Nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                    in reprehenderit.
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="item-5">
-                  <AccordionTrigger className="text-xs text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200">
-                    Nostrud exercitation ullamco laboris
-                  </AccordionTrigger>
-                  <AccordionContent className="text-xs text-gray-500 dark:text-gray-500">
-                    Nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
-                    esse cillum dolore.
-                  </AccordionContent>
-                </AccordionItem>
+                {rubric.map(question =>
+                  <AccordionItem key={question.label} value={question.label || ""}>
+                    <AccordionTrigger className="text-xs text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200">
+                      {question.label}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-xs text-gray-500 dark:text-gray-500">
+                      {question.question}
+                    </AccordionContent>
+                  </AccordionItem>
+                )}
               </Accordion>
               <div className="flex justify-center mt-4">
                 <a

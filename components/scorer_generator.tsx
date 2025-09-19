@@ -138,9 +138,11 @@ function groupByContent(messages: GenerateScorerStatusMessage[]): GroupedSystemM
 function GenerateScorerLoader({
   job,
   completeJob,
+  onFinishMessage,
 }: {
   job?: GenerateScorerJobStatus;
   completeJob: () => Promise<void>;
+  onFinishMessage?: string;
 }) {
   const aggregatedMessages: GroupedSystemMessage[] = useMemo(() => {
     return groupByContent(job?.detailedStatus || []);
@@ -177,7 +179,7 @@ function GenerateScorerLoader({
           <div className={'flex pb-4'}>
             <div className={'flex w-5 flex-none flex-col items-center gap-2'}>
               <div className={'pt-3'}>
-                <PiIcon size={10} isDark={true} />
+                <PiIcon size={10} />
               </div>
               <div className={'w-0.5 flex-1 rounded-xl bg-slate-300 pb-3'} />
             </div>
@@ -190,7 +192,7 @@ function GenerateScorerLoader({
                   setLoadingIntoStudio(false);
                 }}
               >
-                Load into studio {loadingIntoStudio ? <SmallRadialLoader /> : null}
+                {onFinishMessage} {loadingIntoStudio ? <SmallRadialLoader /> : null}
               </DarkArtifactButton>
             </div>
           </div>
@@ -218,6 +220,7 @@ export function ScorerGenerator({
   disabled,
   viewOnly,
   job,
+                                  onFinishMessage="Load into studio"
 } : {
   title: string;
   generatingScorer: boolean;
@@ -227,6 +230,7 @@ export function ScorerGenerator({
   disabled?: boolean;
   viewOnly?: boolean;
   job?: GenerateScorerJobStatus | null;
+  onFinishMessage?: string
 }) {
   const [height, setHeight] = useState<number | 'auto'>('auto');
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
@@ -272,7 +276,7 @@ export function ScorerGenerator({
           <motion.div className={'overflow-hidden'} animate={{ height: height }}>
             <div ref={containerRef}>
               {generatingScorer && job ? (
-                <GenerateScorerLoader completeJob={finishGeneratingScorer} job={job} />
+                <GenerateScorerLoader onFinishMessage={"Load as horoscope"}  completeJob={finishGeneratingScorer} job={job} />
               ) : null}
             </div>
           </motion.div>
