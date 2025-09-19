@@ -15,11 +15,36 @@ import useLocalStorage from "@/lib/hooks/useLocalStorage";
 import PiClient from "withpi";
 import Question = PiClient.Question;
 import {ScorerGenerator} from "@/components/scorer_generator";
+import {getTopJokes, ScoredJoke} from "@/lib/backend/rubricActions";
+import RadialLoader from "@/components/radial_loader";
+
+
+function RankedJoke({joke, score, questionScores} : {joke: string; score: number; questionScores: {label: string; score: number}[]}) {
+  return (
+    <div className="py-3 border-b border-gray-200 dark:border-gray-600">
+      <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
+        {joke}
+      </div>
+      <div className="flex flex-wrap gap-1">
+        <Badge variant="default" className="text-xs">
+          Final Score: {score}
+        </Badge>
+        {questionScores.map(d =>
+          <Badge key={d.label} variant="secondary" className="text-xs">
+            {d.label}: {d.score}
+          </Badge>
+        )}
+      </div>
+    </div>
+  )
+}
 
 export default function RateJokes() {
   const [currentJokeIndex, setCurrentJokeIndex] = useState(0)
   const [rubric, setRubric] = useState<Question[]>([]);
-  const [starting, setStarting] = useState<boolean>(false)
+  const [rankedJokes, setRankedJokes] = useState<ScoredJoke[]>([]);
+  const [startingRubricGen, setStartingRubricGen] = useState<boolean>(false);
+  const [applyingRubric, setApplyingRubric] = useState<boolean>(false);
   const [ratings, setRatings] = useState<{ [key: number]: "funny" | "not-funny" | null }>({})
   const [touchStart, setTouchStart] = useState<number | null>(null)
   const [touchEnd, setTouchEnd] = useState<number | null>(null)
@@ -38,6 +63,14 @@ export default function RateJokes() {
       console.log(e);
     }
   });
+  async function applyRubric(rubric: Question[]) {
+    setRankedJokes([]);
+    setRubric(rubric);
+    setApplyingRubric(true);
+    const rankedJokes = await getTopJokes(rubric);
+    setRankedJokes(rankedJokes);
+    setApplyingRubric(false)
+  }
   async function startGeneratingScorer() {
     const ratingData = Object.entries(ratings);
     if (ratingData.length > 0) {
@@ -52,12 +85,12 @@ export default function RateJokes() {
           badJokes.push(jokes[key].text)
         }
       }
-      setStarting(true);
+      setStartingRubricGen(true);
       console.log("Starting scorer generator with ", goodJokes, badJokes);
       const job = await scorerGenerator.start(goodJokes, badJokes);
       console.log("Stated job", job);
       setJobId(job.jobId);
-      setStarting(false
+      setStartingRubricGen(false
       )
     }
   }
@@ -203,45 +236,47 @@ export default function RateJokes() {
 
         {/* Quick Tips - replaced with accordion component */}
         <div className="mt-8">
-          <ScorerGenerator job={scorerGenerator.status} generatingScorer={starting || scorerGenerator.running || jobId} title={'Generate a horoscope'} finishGeneratingScorer={async () => {
+          <ScorerGenerator job={scorerGenerator.status} generatingScorer={startingRubricGen || scorerGenerator.running || jobId} title={'Generate a horoscope'} finishGeneratingScorer={async () => {
             setJobId(null);
             if (scorerGenerator.status?.dimensions) {
-              setRubric(scorerGenerator.status?.dimensions)
+              await applyRubric(scorerGenerator.status?.dimensions);
             }
           }} startGeneratingScorer={startGeneratingScorer} stopGeneratingScorer={async () => {
             await scorerGenerator.cancel();
           }}/>
-          <Card className="bg-white/60 dark:bg-gray-800/60">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between mb-3">
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Your Humor Horoscope</h3>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">What you look for in your jokes</p>
+          {rubric.length > 0 ?
+            <Card className="bg-white/60 dark:bg-gray-800/60">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Your Humor Horoscope</h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">What you look for in your jokes</p>
+                  </div>
                 </div>
-              </div>
-              <Accordion type="single" collapsible className="w-full">
-                {rubric.map(question =>
-                  <AccordionItem key={question.label} value={question.label || ""}>
-                    <AccordionTrigger className="text-xs text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200">
-                      {question.label}
-                    </AccordionTrigger>
-                    <AccordionContent className="text-xs text-gray-500 dark:text-gray-500">
-                      {question.question}
-                    </AccordionContent>
-                  </AccordionItem>
-                )}
-              </Accordion>
-              <div className="flex justify-center mt-4">
-                <a
-                  href="#"
-                  className="flex items-center gap-2 text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
-                >
-                  <img src="/pi-logo.svg" alt="Pi Studio" className="w-4 h-4" />
-                  Open in Pi Studio
-                </a>
-              </div>
-            </CardContent>
-          </Card>
+                <Accordion type="single" collapsible className="w-full">
+                  {rubric.map(question =>
+                    <AccordionItem key={question.label} value={question.label || ""}>
+                      <AccordionTrigger className="text-xs text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200">
+                        {question.label}
+                      </AccordionTrigger>
+                      <AccordionContent className="text-xs text-gray-500 dark:text-gray-500">
+                        {question.question}
+                      </AccordionContent>
+                    </AccordionItem>
+                  )}
+                </Accordion>
+                <div className="flex justify-center mt-4">
+                  <a
+                    href="#"
+                    className="flex items-center gap-2 text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                  >
+                    <img src="/pi-logo.svg" alt="Pi Studio" className="w-4 h-4" />
+                    Open in Pi Studio
+                  </a>
+                </div>
+              </CardContent>
+            </Card> : null
+          }
         </div>
 
         {/* More recommended jokes */}
@@ -260,72 +295,21 @@ export default function RateJokes() {
                 </h3>
                 <p className="text-xs text-gray-500 dark:text-gray-400">Based on your humor horoscope</p>
               </div>
-              <div className="space-y-0">
-                <div className="py-3 border-b border-gray-200 dark:border-gray-600">
-                  <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
-                    {jokes[5]?.text || "Why don't scientists trust atoms? Because they make up everything!"}
+              {applyingRubric ?
+                <div className={'flex justify-center items-center gap-2'}>
+                  Finding jokes
+                  <RadialLoader/>
+                </div> :
+                rankedJokes.length > 0 ?
+                  <div className="space-y-0">
+                    {rankedJokes.map(j =>
+                      <RankedJoke joke={j.joke} score={j.totalScore} questionScores={j.questionScores}/>
+                    )}
+                  </div> :
+                  <div>
+                    Generate a horoscope to get some ranked jokes.
                   </div>
-                  <div className="flex flex-wrap gap-1">
-                    <Badge variant="secondary" className="text-xs">
-                      Witty 0.87
-                    </Badge>
-                    <Badge variant="secondary" className="text-xs">
-                      Clever 0.92
-                    </Badge>
-                    <Badge variant="secondary" className="text-xs">
-                      Sarcastic 0.74
-                    </Badge>
-                  </div>
-                </div>
-                <div className="py-3 border-b border-gray-200 dark:border-gray-600">
-                  <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
-                    {jokes[12]?.text || "I told my wife she was drawing her eyebrows too high. She looked surprised."}
-                  </div>
-                  <div className="flex flex-wrap gap-1">
-                    <Badge variant="secondary" className="text-xs">
-                      Punny 0.65
-                    </Badge>
-                    <Badge variant="secondary" className="text-xs">
-                      Absurd 0.81
-                    </Badge>
-                    <Badge variant="secondary" className="text-xs">
-                      Dry 0.59
-                    </Badge>
-                    <Badge variant="secondary" className="text-xs">
-                      Smart 0.78
-                    </Badge>
-                  </div>
-                </div>
-                <div className="py-3 border-b border-gray-200 dark:border-gray-600">
-                  <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
-                    {jokes[23]?.text || "Why did the scarecrow win an award? He was outstanding in his field!"}
-                  </div>
-                  <div className="flex flex-wrap gap-1">
-                    <Badge variant="secondary" className="text-xs">
-                      Goofy 0.93
-                    </Badge>
-                    <Badge variant="secondary" className="text-xs">
-                      Random 0.46
-                    </Badge>
-                  </div>
-                </div>
-                <div className="py-3">
-                  <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
-                    {jokes[34]?.text || "I'm reading a book about anti-gravity. It's impossible to put down!"}
-                  </div>
-                  <div className="flex flex-wrap gap-1">
-                    <Badge variant="secondary" className="text-xs">
-                      Ironic 0.72
-                    </Badge>
-                    <Badge variant="secondary" className="text-xs">
-                      Quirky 0.88
-                    </Badge>
-                    <Badge variant="secondary" className="text-xs">
-                      Bold 0.63
-                    </Badge>
-                  </div>
-                </div>
-              </div>
+              }
             </CardContent>
           </Card>
         </div>

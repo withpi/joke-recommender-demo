@@ -5,7 +5,7 @@ import mongoClient from '@/lib/mongodb'
 import PiClient from "withpi";
 import {z} from 'zod';
 import Question = PiClient.Question;
-import {GenerateStartJobResponse} from "withpi/resources/scoring-system";
+import {jokes} from "@/data/jokes";
 
 export interface JokeRubricGenJob {
   _id: string;
@@ -102,7 +102,7 @@ export async function createRubric(goodJokes: string[], badJokes: string[]):Prom
     existing_questions: [],
     num_questions: 10,
   })
-  const collection = mongoClient?.db("Cluster0").collection<JokeRubricGenJob>('jokes')
+  const collection = mongoClient?.db("jokesapp").collection<JokeRubricGenJob>('jokes')
   await collection?.insertOne({
     _id: job.job_id,
     jobId: job.job_id,
@@ -118,11 +118,36 @@ export async function createRubric(goodJokes: string[], badJokes: string[]):Prom
   };
 }
 
-
-
 export async function cancelGenerateScorerJob(jobId: string): Promise<string> {
   const client = new PiClient({
     apiKey: process.env.WITHPI_API_KEY,
   });
-  return await client.scoringSystem.generate.cancel(jobId);
+  return client.scoringSystem.generate.cancel(jobId);
 }
+
+
+export interface ScoredJoke {
+  questionScores: {label: string; score: number}[];
+  totalScore: number;
+  joke: string;
+}
+export async function getTopJokes(rubric: Question[], limit: number=10): Promise<ScoredJoke[]> {
+  const client = new PiClient({
+    apiKey: process.env.WITHPI_API_KEY,
+  });
+  const scoredJokes = await Promise.all(jokes.map(async j => {
+    const score = await client.scoringSystem.score({
+      llm_input: "",
+      llm_output: j.text,
+      scoring_spec: rubric,
+    })
+    return ({
+      questionScores: Object.entries(score.question_scores).map(([key, value]) => ({label: key, score: value})),
+      totalScore: score.total_score,
+      joke: j.text,
+    })
+  }));
+  const scoresDescending = scoredJokes.sort((a, b) => b.totalScore - a.totalScore);
+  return scoresDescending.filter((_, i) => i < limit)
+}
+
