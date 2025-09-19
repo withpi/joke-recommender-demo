@@ -131,7 +131,7 @@ export interface ScoredJoke {
   totalScore: number;
   joke: string;
 }
-export async function getTopJokes(rubric: Question[], limit: number=10): Promise<ScoredJoke[]> {
+export async function getTopJokes(rubric: Question[]): Promise<ScoredJoke[]> {
   const client = new PiClient({
     apiKey: process.env.WITHPI_API_KEY,
   });
@@ -147,7 +147,6 @@ export async function getTopJokes(rubric: Question[], limit: number=10): Promise
       joke: j.text,
     })
   }));
-  const scoresDescending = scoredJokes.sort((a, b) => b.totalScore - a.totalScore);
-  return scoresDescending.filter((_, i) => i < limit)
+  return scoredJokes.sort((a, b) => b.totalScore - a.totalScore);
 }
 
