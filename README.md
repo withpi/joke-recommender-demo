@@ -37,13 +37,13 @@ This framework is fully **extensible** — quickly adapt it to recommend any typ
 
 ## 🔑 Environment Setup
 
-This project requires the following API keys. Add them to your `.env.local` file:
+This project requires the following API key. Add it to your `.env.local` file:
 
 ```bash
-WITHPI_API_KEY=<your_withpi_key>   # https://withpi.ai/account/keys
+WITHPI_API_KEY=<your_withpi_key>   # Get your free key at https://withpi.ai/account/keys
 ```
 
-**Note:** This demo uses Pi's scoring models for personalized recommendations. You can get started with a free API key at [withpi.ai](https://withpi.ai).
+**Note:** This demo uses Pi's scoring models for personalized recommendations. You can get a **free API key** at [withpi.ai/account/keys](https://withpi.ai/account/keys) to get started immediately.
 
 ---
 
