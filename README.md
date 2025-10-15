@@ -4,7 +4,7 @@
 
 **Humor Horoscope Demo** is an intelligent joke recommendation system that learns your sense of humor from just **5 ratings** and provides personalized joke recommendations using **[Pi Scoring Models](https://code.withpi.ai/score/writing_rubrics)**.
 
-This repository demonstrates how to solve the **cold start problem** in recommender systems by using tunable scoring models to quickly adapt to user preferences without requiring extensive historical data.
+This repository demonstrates how to solve the **cold start problem** in recommender systems by using tunable scoring models to quickly adapt to user preferences without requiring extensive historical data. **No data is stored** — everything runs in real-time using only the Pi API.
 
 This repository is fully **open source** and serves as a **template** for building personalized recommendation systems.
 

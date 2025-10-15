@@ -47,8 +47,8 @@ export default function DatabasePage() {
               Back to Jokes
             </Button>
           </Link>
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">Full Joke Database</h1>
-          <p className="text-gray-600 dark:text-gray-300">All {jokes.length} jokes with humor analysis</p>
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">Complete Joke Collection</h1>
+          <p className="text-gray-600 dark:text-gray-300">All {jokes.length} jokes with sample humor analysis tags</p>
         </div>
 
         <Card>
@@ -64,7 +64,7 @@ export default function DatabasePage() {
                       Joke
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Humor Analysis
+                      Sample Tags
                     </th>
                   </tr>
                 </thead>
