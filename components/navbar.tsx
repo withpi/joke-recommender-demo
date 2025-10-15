@@ -3,8 +3,10 @@ import Image from "next/image";
 import piLogo from "@/public/pi-logo-full.svg";
 import {BookOpen, Calendar, Github, Mail, MessageCircle} from "lucide-react";
 import {ReactNode} from "react";
-
-export function Navbar({children} : {children?: ReactNode;}) {
+import {UserDropdown} from "@/components/auth/signin_dropdown";
+import { Button } from "./catalyst/button";
+import {User} from "next-auth";
+export function Navbar({children, user} : {children?: ReactNode; user?: User}) {
   return (
     <header className="flex items-center justify-between gap-6 px-6 py-4 border-b">
       <div className="flex items-center gap-6">
@@ -36,10 +38,13 @@ export function Navbar({children} : {children?: ReactNode;}) {
         >
           Contact
         </a>
-        <a  href="https://withpi.ai"
-            target="_blank" className={' border font-semibold text-gray-700 rounded-md bg-white py-1.5 p-3'}>
-          Pi Labs Home
-        </a>
+        {user?.email ?
+          <UserDropdown user={user}/> :
+          <Button color={'white'} className={'cursor-pointer'}>
+            Pi Labs Home
+          </Button>
+
+        }
       </div>
     </header>
   )

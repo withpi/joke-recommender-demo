@@ -10,7 +10,7 @@ import {ArrowLeftIcon} from "@heroicons/react/24/outline";
 const integrationCode = `pnpm dev
 # or
 npm run dev`
-export function AboutSection() {
+export function AboutSection({demoLink} : {demoLink: string}) {
   return (
     <div className="max-w-4xl mx-auto space-y-12">
       <Link href={'https://withpi.ai/templates'} className={'text-sm text-gray-500 flex gap-2'}>
@@ -24,7 +24,7 @@ export function AboutSection() {
           </div>
         </div>
         <div className={'pt-4'}>
-          <Link href={'/demo'} className={'p-6 py-4 bg-black hover:bg-zinc-700 text-white font-semibold rounded-md'}>
+          <Link href={demoLink} className={'p-6 py-4 bg-black hover:bg-zinc-700 text-white font-semibold rounded-md'}>
             View Demo
           </Link>
         </div>
