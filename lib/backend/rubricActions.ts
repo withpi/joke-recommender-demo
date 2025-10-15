@@ -1,18 +1,10 @@
 'use server';
-import mongoClient from '@/lib/mongodb'
-
 
 import PiClient from "withpi";
 import {z} from 'zod';
 import Question = PiClient.Question;
 import {jokes} from "@/data/jokes";
 
-export interface JokeRubricGenJob {
-  _id: string;
-  jobId: string;
-  goodJokes: string[];
-  badJokes: string[]
-}
 
 export interface GenerateScorerJobStatus {
   jobId: string;
@@ -102,13 +94,7 @@ export async function createRubric(goodJokes: string[], badJokes: string[]):Prom
     existing_questions: [],
     num_questions: 10,
   })
-  const collection = mongoClient?.db("jokesapp").collection<JokeRubricGenJob>('jokes')
-  await collection?.insertOne({
-    _id: job.job_id,
-    jobId: job.job_id,
-    goodJokes: goodJokes,
-    badJokes: badJokes,
-  })
+
   return {
     jobId: job.job_id,
     state: job.state,
