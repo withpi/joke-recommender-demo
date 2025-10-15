@@ -1,11 +1,16 @@
-"use client"
+import {AboutSection} from "@/components/about_section";
+import {Navbar} from "@/components/navbar";
+import {Footer} from "@/components/footer";
 
-import RateJokes from "@/components/rate-jokes"
 
-export default function JokeApp() {
+export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800">
-      <RateJokes />
+    <div className={'bg-gray-50'}>
+      <Navbar/>
+      <div className={'py-16 px-4 pb-24'}>
+        <AboutSection/>
+      </div>
+      <Footer/>
     </div>
   )
 }
