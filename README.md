@@ -1,6 +1,6 @@
 # Humor Horoscope Demo
 
-**[Try the live demo →](https://vercel.com/pi-copilot/v0-joke-box-app)**
+**[Try the live demo →](https://joke-recommender.withpi.ai)**
 
 **Humor Horoscope Demo** is an intelligent joke recommendation system that learns your sense of humor from just **5 ratings** and provides personalized joke recommendations using **[Pi Scoring Models](https://code.withpi.ai/score/writing_rubrics)**.
 
