@@ -287,10 +287,10 @@ export default function RateJokes() {
                 <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                   Jokes for you{" "}
                   <Link
-                    href="/database"
+                    href="/"
                     className="text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 font-normal"
                   >
-                    (see full database)
+                    (browse all jokes)
                   </Link>
                 </h3>
                 <p className="text-xs text-gray-500 dark:text-gray-400">Based on your humor horoscope</p>
