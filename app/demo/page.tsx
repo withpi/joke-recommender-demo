@@ -1,5 +1,3 @@
-"use client"
-
 import RateJokes from "@/components/rate-jokes"
 import {Navbar} from "@/components/navbar";
 import {auth} from "@/auth";
